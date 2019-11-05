@@ -1,0 +1,26 @@
+{
+    "name": "qson/mongodb-log",
+    "description": "Store log to mongo for easy search and analyse",
+    "keywords": ["mongodb", "log", "search"],
+    "license" : "BSD-3-Clause-Attribution",
+    "authors" : [
+        {
+            "name": "qson",
+            "email": "395144600@qq.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.9"
+    },
+    "require-dev": {
+
+    },
+    "autoload": {
+        "psr-4": {
+            "MongodbLog\\": "src/"
+        }
+    },
+    "extra": {
+
+    }
+}
