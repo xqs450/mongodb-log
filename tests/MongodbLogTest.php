@@ -6,12 +6,7 @@
  * Time: 11:41
  */
 
-require_once "../src/MongodbLog.php";
-require_once "../src/Application.php";
-require_once "../src/Common/ReadLogToMongo.php";
-require_once "../src/Common/WriteLog.php";
-require_once "../src/Common/SearchMongoLog.php";
-require_once "../src/Helper/Helper.php";
+require_once "../vendor/autoload.php";
 
 use MongodbLog\MongodbLog;
 
