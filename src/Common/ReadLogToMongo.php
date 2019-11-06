@@ -19,6 +19,12 @@ class ReadLogToMongo
         $this->baseLogPath  = $config["base_log_path"];
         $this->dbName       = $config["db_name"];
         $this->table        = $config["table"];
+        if(!is_dir($this->baseLogPath)){
+            throw new DirNotFound("Log root dir not found");
+        }
+        if(!is_writable($this->baseLogPath)){
+            throw new DirNotFound("Log root dir not writeable");
+        }
     }
     public function run($curDay=""){
         $this->mongoManager = new \MongoDB\Driver\Manager("mongodb://localhost:27017");

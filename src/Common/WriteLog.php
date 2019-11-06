@@ -7,6 +7,7 @@
  */
 
 namespace MongodbLog\Common;
+use MongodbLog\Exception\DirNotFound;
 use MongodbLog\Helper\helper;
 
 class WriteLog
@@ -18,6 +19,12 @@ class WriteLog
         $this->baseLogPath = $config["base_log_path"];
         $this->app = $config["app"];
         $this->mod = $config["mod"];
+        if(!is_dir($this->baseLogPath)){
+            throw new DirNotFound("Log root dir not found");
+        }
+        if(!is_writable($this->baseLogPath)){
+            throw new DirNotFound("Log root dir not writeable");
+        }
     }
     public function writeLog($title="",$data,$type="log",$module="mobile"){
         $curTime = time();

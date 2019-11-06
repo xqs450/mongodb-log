@@ -6,7 +6,7 @@
  * Time: 11:41
  */
 
-require_once "../vendor/autoload.php";
+require_once "../src/autoload.php";
 
 use MongodbLog\MongodbLog;
 
