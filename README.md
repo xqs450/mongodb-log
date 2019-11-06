@@ -16,6 +16,7 @@ The following PHP extensions are required:
 <?php
 
 require_once 'PATH_TO_BRAINTREE/src/autoload.php';
+use MongodbLog\MongodbLog;
 
 // 初始化MongodbLog 类，传入存储日志的路径，模块名称，方法名称及mongodb中创建的数据库名及集合名称
  $config = [
