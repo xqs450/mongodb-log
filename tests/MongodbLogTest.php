@@ -37,7 +37,7 @@ class MongodbLogTest
     }
     public function searchReadLog()
     {
-        $list = MongodbLog::search([],["pageSize"=>10,"currentPage"=>1]);
+        $list = MongodbLog::search(["sh_app"=>"index"],["pageSize"=>10,"currentPage"=>1]);
         print_r($list);
     }
 }
