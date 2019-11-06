@@ -24,7 +24,7 @@ class MongodbLogTest
         MongodbLog::init($config);
         $this->testWriteLog();
         $this->testReadLog();
-        $this->searchReadLog();
+        $this->searchLog();
     }
 
     public function testWriteLog()
@@ -35,7 +35,7 @@ class MongodbLogTest
     {
         MongodbLog::readLog();
     }
-    public function searchReadLog()
+    public function searchLog()
     {
         $list = MongodbLog::search(["sh_app"=>"index"],["pageSize"=>10,"currentPage"=>1]);
         print_r($list);
