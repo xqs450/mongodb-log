@@ -38,10 +38,8 @@ require_once 'PATH_TO_BRAINTREE/src/autoload.php';
 ```
 
 ## php ini
-
-
 ```ini
-extension = "mongo.so"
+extension = "mongodb.so"
 ```
 
 
