@@ -45,7 +45,32 @@ extension = "mongodb.so"
 
 
 ## Testing
+```
 php tests/MongodbLogTest.php
+```
+## Mongodb
+```
+1.Mongdob 对内存占用比较多，需要对其进行限制,修改/etc/mongod.conf文件。添加cacheSizeGB限制。
+# Where and how to store data.
+storage:
+  dbPath: /var/lib/mongodb
+  journal:
+    enabled: true
+
+  wiredTiger:
+    engineConfig:
+      cacheSizeGB: 0.5
+      
+ 2.对数据库collection限制大小。
+ db.createCollection("table", { capped : true, size : 512000000} )
+ 
+ 3.添加索引解决分页报错问题
+ db.table.createIndex({"time":-1})
+```
+
+## supervisor
+```
+配置supervisor对读取入库进程进行监控
 ```
 
 ## License
