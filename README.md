@@ -15,7 +15,7 @@ The following PHP extensions are required:
 * mongodb
 
 ## install
-composer require qson/mongodb
+composer require qson/mongodb-log
 
 ## Quick Start Example
 写入日志Demo
