@@ -6,7 +6,7 @@
  * Time: 15:26
  */
 
-namespace MongodbLog\Common;
+namespace MongodbLog\Model;
 use MongodbLog\Exception\DirNotFound;
 use MongodbLog\Helper\helper;
 
@@ -17,8 +17,6 @@ class WriteLog
     protected $mod;
     public function __construct($config){
         $this->baseLogPath = $config["base_log_path"];
-        $this->app = $config["app"];
-        $this->mod = $config["mod"];
         if(!is_dir($this->baseLogPath)){
             throw new DirNotFound("Log root dir not found");
         }
@@ -26,7 +24,26 @@ class WriteLog
             throw new DirNotFound("Log root dir not writeable");
         }
     }
-    public function writeLog($title="",$data,$type="log",$module="mobile"){
+
+    /**
+     * @param $app
+     * @param $mod
+     * 设置请求的路由名和方法名
+     */
+    public function setRouter($app,$mod){
+        $this->app = $app;
+        $this->mod = $mod;
+    }
+
+    /**
+     * @param string $title 标题名称
+     * @param array $data 日志数据
+     * @param string $type 日志类型
+     * @param string $module 日志模块
+     * @return bool|int
+     * 写日志
+     */
+    public function writeLog($title="",$data=[],$type="log",$module="mobile"){
         $curTime = time();
         if(!isset($GLOBALS["is_write_fist"])){
             $reg                 = $_REQUEST;

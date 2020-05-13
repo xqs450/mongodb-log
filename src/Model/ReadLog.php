@@ -5,20 +5,27 @@
  * Date: 2019/10/15
  * Time: 14:49
  */
-namespace MongodbLog\Common;
+namespace MongodbLog\Model;
 use MongodbLog\Helper\helper;
-class ReadLogToMongo
+class ReadLog
 {
+    /**
+     * @var $mongoManager \MongoDB\Driver\Manager
+     */
     protected $mongoManager;
     protected $dbName;
     protected $lineNumList;
     protected $table;
     protected $baseLogPath;
+    protected $host;
+    protected $perReadLineNum;
     public function __construct($config)
     {
         $this->baseLogPath  = $config["base_log_path"];
         $this->dbName       = $config["db_name"];
         $this->table        = $config["table"];
+        $this->host        = $config["host"];
+        $this->perReadLineNum = $config["per_read_line_num"];
         if(!is_dir($this->baseLogPath)){
             throw new DirNotFound("Log root dir not found");
         }
@@ -27,13 +34,17 @@ class ReadLogToMongo
         }
     }
     public function run($curDay=""){
-        $this->mongoManager = new \MongoDB\Driver\Manager("mongodb://localhost:27017");
+        $this->mongoManager = new \MongoDB\Driver\Manager( $this->host);
         if(empty($curDay))
             $curDay = date("Y-m-d");
         $this->readDayLog($curDay,$this->table);
     }
 
-
+    /**
+     * @param $day
+     * @param $table
+     * 读取日志文件
+     */
     protected  function readDayLog($day,$table){
         $basePath = $this->baseLogPath.$day."/$table/";
         if(!is_dir($basePath))return;
@@ -47,7 +58,7 @@ class ReadLogToMongo
                     if(isset($this->lineNumList[$fileName])){
                         $num = $this->lineNumList[$fileName];
                     }
-                    $lineList = $this->readFile2arr($basePath.$file,1000,$num);
+                    $lineList = $this->readFile2arr($basePath.$file,$this->perReadLineNum ,$num);
                     $this->insertLogToMongo($fileName,$lineList,$table);
                 }
             }
@@ -55,6 +66,11 @@ class ReadLogToMongo
         $this->writeLineJson($basePath);
     }
 
+    /**
+     * @param $basePath
+     * @return array|mixed
+     * 获取上次读取到的文件的行数
+     */
     protected function getLineNumJson($basePath){
         $lineNumInfoFile = $basePath."/line_info.json";
         $lineNumList = [];
@@ -70,6 +86,12 @@ class ReadLogToMongo
         file_put_contents($lineNumInfoFile,json_encode($this->lineNumList));
     }
 
+    /**
+     * @param $fileName
+     * @param $lineList
+     * @param $table
+     * 插入数据到mongodb
+     */
     protected function insertLogToMongo($fileName,$lineList,$table){
         if(empty($lineList))return;
         $bulk = new \MongoDB\Driver\BulkWrite;
@@ -91,7 +113,6 @@ class ReadLogToMongo
                     $newData["msg"] = $e->getMessage();
                     $bulk->insert($newData);
                 }
-
                 $hasData = 1;
             }
         }
@@ -99,15 +120,24 @@ class ReadLogToMongo
             return ;
         }
         $table = $this->dbName.".".$table;
-        $this->mongoManager->executeBulkWrite($table, $bulk);
+        $writeResult = $this->mongoManager->executeBulkWrite($table, $bulk);
+        //实际插入mongodb的数据
+        $insertCount = $writeResult->getInsertedCount();
         if(isset( $this->lineNumList[$fileName])){
-            $this->lineNumList[$fileName] =  $this->lineNumList[$fileName] + count($lineList);
+            $this->lineNumList[$fileName] =  $this->lineNumList[$fileName] + $insertCount;
         }else{
             $this->lineNumList[$fileName] =  count($lineList);
         }
 
     }
 
+    /**
+     * @param $fileName
+     * @param $table
+     * @return mixed
+     * @throws \MongoDB\Driver\Exception\Exception
+     * 统计mongodb表中数据的数量
+     */
     protected function getNumByName($fileName,$table){
         $absFileName = $fileName."_".date("Y-m-d");
         $command = new \MongoDB\Driver\Command([
@@ -120,8 +150,15 @@ class ReadLogToMongo
         if($result->ok == 1){
             return $result->n;
         }
-        exit("读取出错");
     }
+
+    /**
+     * @param $path
+     * @param $count
+     * @param int $offset
+     * @return array
+     * 从文件指定行数读入数据到数组
+     */
     protected function readFile2arr($path, $count, $offset=0) {
         $arr = array();
         if (! is_readable($path))

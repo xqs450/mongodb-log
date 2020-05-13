@@ -6,40 +6,44 @@
  * Time: 11:41
  */
 
-require_once "../src/autoload.php";
+require_once "./autoload.php";
 
-use MongodbLog\MongodbLog;
+use \MongodbLog\WriteLogApp;
+use \MongodbLog\ReadLogApp;
+use \MongodbLog\SearchLogApp;
+use PHPUnit\Framework\TestCase;
 
-class MongodbLogTest
+class MongodbLogTest extends TestCase
 {
-    public function __construct()
+    public function setUp()
     {
+        parent::setUp();
         $config = [
             "base_log_path"=>"F:/www/mongodb/data/",
-            "app"=>"index",
-            "mod"=>"test",
             "db_name"=>"test2",
-            'table'=>'mobile'
+            'table'=>'mobile',
+            'host'=>'mongodb://localhost:27017',
+            'per_read_line_num'=>1000
         ];
-        MongodbLog::init($config);
-        $this->testWriteLog();
-        $this->testReadLog();
-        $this->searchLog();
+        WriteLogApp::init($config);
+        SearchLogApp::init($config);
+        ReadLogApp::init($config);
     }
 
     public function testWriteLog()
     {
-        MongodbLog::writeLog("aaa",["bbb"]);
+        WriteLogApp::setRouter("index","index");
+        WriteLogApp::writeLog("aaa",["bbb"]);
+        $this->assertTrue(true);
     }
     public function testReadLog()
     {
-        MongodbLog::readLog();
+        ReadLogApp::run();
+        $this->assertTrue(true);
     }
-    public function searchLog()
+    public function testSearchLog()
     {
-        $list = MongodbLog::search(["sh_app"=>"index"],["pageSize"=>10,"currentPage"=>1]);
-        print_r($list);
+        $list = SearchLogApp::search(["sh_app"=>"index"],["pageSize"=>10,"currentPage"=>1]);
+        $this->assertTrue(true);
     }
 }
-
-$test = new MongodbLogTest();

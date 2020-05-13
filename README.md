@@ -1,6 +1,10 @@
 # MongodbLog PHP library
 
 The MongodbLog PHP library storing logs in mongodb for easy query and analysis
+一款基于mongodb的简洁的，高性能的php日志写入，收集，查询扩展库，可用于日志收集，错误上报及性能分析等。
+1.采用json存储写入的日志
+2.采用SplFileObject类读取文件，支持分页读取文件。结合supervisor可准时候采集数据。
+3.简单封装mongodb查询接口
 
 ## Dependencies
 
@@ -10,32 +14,62 @@ The following PHP extensions are required:
 
 * mongodb
 
-## Quick Start Example
+## install
+composer require qson/mongodb
 
+## Quick Start Example
+写入日志Demo
 ```php
 <?php
 
-require_once 'PATH_TO_BRAINTREE/src/autoload.php';
-use MongodbLog\MongodbLog;
+use MongodbLog\WriteLogApp;
 
-// 初始化MongodbLog 类，传入存储日志的路径，模块名称，方法名称及mongodb中创建的数据库名及集合名称
  $config = [
-            "base_log_path"=>"your log file path",
-            "app"=>"your controller name ",
-            "mod"=>"your method name",
-            "db_name"=>"your mongodb db name",
-            'table'=>'your mongodb collection name'
+            "base_log_path"=>"F:/www/mongodb/data/", //日志存储目录
+            "db_name"=>"test2", //mongodb数据库名称
+            'table'=>'mobile',//mongdb 表名称
+            'host'=>'mongodb://localhost:27017', //mongodb连接地址
+            'per_read_line_num'=>1000 //每次读取行数
         ];
-        MongodbLog::init($config);
+ WriteLogApp::init($config); //设置初始化配置文件
+ WriteLogApp::setRouter("index","index");//记录访问的路由名称和方法名称
+ WriteLogApp::writeLog("aaa",["bbb"]); //写入日志
+        
+```
 
-// 日志写入文件代码:传入标题，日志内容和日志模块自定义类型
- MongodbLog::writeLog("title",["data"],"log");
- 
- //日志读取入库类，分片读取日志入库到mongodb，后台需要起一个进程不断读取或者定时任务读取
- MongodbLog::readLog();
- 
- //后台根据日志类型查询日志接口:例如查询控制器为index的类型
- $list = MongodbLog::search(["sh_app"=>"index"],["pageSize"=>10,"currentPage"=>1]);
+读取日志Demo，参照task，实际使用需要配置读取进程，循环读取
+```php
+<?php
+
+use MongodbLog\ReadLogApp;
+
+ $config = [
+            "base_log_path"=>"F:/www/mongodb/data/", //日志存储目录
+            "db_name"=>"test2", //mongodb数据库名称
+            'table'=>'mobile',//mongdb 表名称
+            'host'=>'mongodb://localhost:27017', //mongodb连接地址
+            'per_read_line_num'=>1000 //每次读取行数
+        ];
+ ReadLogApp::init($config); //设置初始化配置文件
+ ReadLogApp::run();
+        
+```
+
+查询demo
+```php
+<?php
+
+use MongodbLog\SearchLogApp;
+
+ $config = [
+            "base_log_path"=>"F:/www/mongodb/data/", //日志存储目录
+            "db_name"=>"test2", //mongodb数据库名称
+            'table'=>'mobile',//mongdb 表名称
+            'host'=>'mongodb://localhost:27017', //mongodb连接地址
+            'per_read_line_num'=>1000 //每次读取行数
+        ];
+ SearchLogApp::init($config); //设置初始化配置文件
+ $list = SearchLogApp::search(["sh_app"=>"index"],["pageSize"=>10,"currentPage"=>1]);        
 ```
 
 ## php ini
@@ -46,7 +80,7 @@ extension = "mongodb.so"
 
 ## Testing
 ```
-php tests/MongodbLogTest.php
+phpunit MongodbLogTest.php
 ```
 ## Mongodb
 ```

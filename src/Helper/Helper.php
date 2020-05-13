@@ -8,13 +8,14 @@
 namespace MongodbLog\Helper;
 class Helper{
     public static function getClientIpAddress(){
+        $ip = "127.0.0.1";
         if(!empty($_SERVER['HTTP_CLIENT_IP'])){
             //ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
         }elseif(!empty($_SERVER['HTTP_X_FORWARDED_FOR'])){
             //ip pass from proxy
             $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        }else{
+        }elseif(!empty($_SERVER['REMOTE_ADDR'])){
             $ip = $_SERVER['REMOTE_ADDR'];
         }
         return $ip;

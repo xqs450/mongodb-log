@@ -6,18 +6,20 @@
  * Time: 15:04
  */
 
-namespace MongodbLog\Common;
+namespace MongodbLog\Model;
 
-class SearchMongoLog
+class SearchLog
 {
     protected $mongoManager;
     protected $dbName;
     protected $lineNumList;
     protected $table;
+    protected $host;
     public function __construct($config)
     {
         $this->dbName       = $config["db_name"];
         $this->table        = $config["table"];
+        $this->host         = $config["host"];
     }
     public function search($condition,$pageInfo){
         $filter = new \stdClass();
@@ -65,7 +67,7 @@ class SearchMongoLog
             $filter->union_id = $condition["union_id"];
             $search['union_id'] = $condition["union_id"];
         }
-        $manager    = new \MongoDB\Driver\Manager("mongodb://localhost:27017");
+        $manager    = new \MongoDB\Driver\Manager($this->host);
         $command = new \MongoDB\Driver\Command([
             'count' => $this->table,
             'query' => $filter,

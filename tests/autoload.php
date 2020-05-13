@@ -30,5 +30,7 @@ if (version_compare(PHP_VERSION, '5.4.0', '<')) {
 }
 
 requireDependencies();
-require_once (__DIR__ . DIRECTORY_SEPARATOR.'Application.php');
-require_once (__DIR__ . DIRECTORY_SEPARATOR.'MongodbLog.php');
+//$autoPath = __DIR__ . DIRECTORY_SEPARATOR.'/../vendor/autoload.php';
+//require_once (__DIR__ . DIRECTORY_SEPARATOR.'/../vendor/autoload.php');
+//require_once(__DIR__ . DIRECTORY_SEPARATOR . '/../src/SearchLogApp.php');
+//require_once(__DIR__ . DIRECTORY_SEPARATOR . '/../src/WriteLogApp.php');
