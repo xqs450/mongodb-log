@@ -7,7 +7,7 @@ spl_autoload_register(function ($className) {
     }
     $fileName = substr($className,strlen("MongodbLog"));
     $filePathName = dirname(__DIR__);
-    $absFile = $filePathName."/".$fileName.".php";
+    $absFile = $filePathName."/src/".$fileName.".php";
 
     if (is_file($absFile)) {
         require_once $absFile;
