@@ -74,7 +74,7 @@ class WriteLog
         }
         $query = $_REQUEST;
 
-        $fileName = trim($this->app."-".$this->mod);
+        $fileName = trim($this->control."-".$this->method);
         $dataObj = [];
         $dataObj["union_id"]    = $unionSessionId;
         $dataObj["data"]        = $data;
