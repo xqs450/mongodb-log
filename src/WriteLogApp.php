@@ -22,8 +22,8 @@ class WriteLogApp
             self::$writeLog = new WriteLog($config);
         }
     }
-    public static function  setRouter($app,$mod){
-        self::$writeLog->setRouter($app,$mod);
+    public static function  setRouter($control,$method){
+        self::$writeLog->setRouter($control,$method);
     }
 
     /**

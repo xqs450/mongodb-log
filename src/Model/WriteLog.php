@@ -13,8 +13,9 @@ use MongodbLog\Helper\helper;
 class WriteLog
 {
     protected $baseLogPath;
-    protected $app;
-    protected $mod;
+    protected $control;
+    protected $method;
+    protected $retData;
     public function __construct($config){
         $this->baseLogPath = $config["base_log_path"];
         if(!is_dir($this->baseLogPath)){
@@ -26,13 +27,21 @@ class WriteLog
     }
 
     /**
-     * @param $app
-     * @param $mod
+     * @param $control
+     * @param $method
      * 设置请求的路由名和方法名
      */
-    public function setRouter($app,$mod){
-        $this->app = $app;
-        $this->mod = $mod;
+    public function setRouter($control,$method){
+        $this->control = $control;
+        $this->method = $method;
+    }
+
+    /**
+     * @param $data
+     * 设置用户返回数据
+     */
+    public function setReturnData($data){
+        $this->retData = $data;
     }
 
     /**
@@ -67,16 +76,19 @@ class WriteLog
 
         $fileName = trim($this->app."-".$this->mod);
         $dataObj = [];
-        $dataObj["union_id"]   = $unionSessionId;
+        $dataObj["union_id"]    = $unionSessionId;
         $dataObj["data"]        = $data;
         $dataObj["type"]        = $type;
         $dataObj["title"]       = $title;
         $dataObj["time"]        = $curTime;
-        $dataObj["uid"]         = $uid;
+        $dataObj["user_id"]     = $uid;
         $dataObj["query"]       = $query;
-        $dataObj["app"]         = trim($this->app);
-        $dataObj["mod"]         = trim($this->mod);
+        $dataObj["control"]     = trim($this->control);
+        $dataObj["method"]      = trim($this->method);
         $dataObj["client_ip"]   = Helper::getClientIpAddress();
+        if(isset($this->retData)){
+            $dataObj["return_data"] = $this->retData;
+        }
 
         $baseLogModulePath = $this->baseLogPath.date("Y-m-d")."/".$module."/";
         if(!is_dir($baseLogModulePath)){

@@ -43,7 +43,7 @@ class MongodbLogTest extends TestCase
     }
     public function testSearchLog()
     {
-        $list = SearchLogApp::search(["sh_app"=>"index"],["pageSize"=>10,"currentPage"=>1]);
+        $list = SearchLogApp::search(["control"=>"index"],["pageSize"=>10,"currentPage"=>1]);
         $this->assertTrue(true);
     }
 }

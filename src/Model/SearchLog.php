@@ -24,13 +24,13 @@ class SearchLog
     public function search($condition,$pageInfo){
         $filter = new \stdClass();
         $search = array();
-        if(isset($condition["sh_mod"])){
-            $filter->mod = $condition["sh_mod"];
-            $search['sh_mod'] = $condition["sh_mod"];
+        if(isset($condition["method"])){
+            $filter->method = $condition["method"];
+            $search['method'] = $condition["method"];
         }
-        if(isset($condition["sh_app"])){
-            $filter->app = $condition["sh_app"];
-            $search['sh_app'] = $condition["sh_app"];
+        if(isset($condition["control"])){
+            $filter->control = $condition["control"];
+            $search['control'] = $condition["control"];
         }
         if(isset($condition["start_time"]) && isset($condition["end_time"])){
             $startTime = strtotime($condition["start_time"]);
@@ -48,7 +48,7 @@ class SearchLog
             $search['end_time'] = $condition["end_time"];
         }
         if(isset($condition["user_id"])){
-            $filter->uid = $condition["user_id"];
+            $filter->user_id = $condition["user_id"];
             $search['user_id'] = $condition["user_id"];
         }
         if(isset($condition["client_ip"])){
