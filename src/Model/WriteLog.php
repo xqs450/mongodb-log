@@ -16,6 +16,7 @@ class WriteLog
     protected $control;
     protected $method;
     protected $retData;
+    protected $takeUpTime;
     public function __construct($config){
         $this->baseLogPath = $config["base_log_path"];
         if(!is_dir($this->baseLogPath)){
@@ -26,22 +27,17 @@ class WriteLog
         }
     }
 
-    /**
-     * @param $control
-     * @param $method
-     * 设置请求的路由名和方法名
-     */
     public function setRouter($control,$method){
         $this->control = $control;
         $this->method = $method;
     }
 
-    /**
-     * @param $data
-     * 设置用户返回数据
-     */
     public function setReturnData($data){
         $this->retData = $data;
+    }
+
+    public function setTakeUpTime($takeUpTime){
+        $this->takeUpTime = $takeUpTime;
     }
 
     /**
@@ -80,7 +76,7 @@ class WriteLog
         $dataObj["data"]        = $data;
         $dataObj["type"]        = $type;
         $dataObj["title"]       = $title;
-        $dataObj["time"]        = $curTime;
+        $dataObj["time"]        = intval($curTime);
         $dataObj["user_id"]     = $uid;
         $dataObj["query"]       = $query;
         $dataObj["control"]     = trim($this->control);
@@ -88,6 +84,9 @@ class WriteLog
         $dataObj["client_ip"]   = Helper::getClientIpAddress();
         if(isset($this->retData)){
             $dataObj["return_data"] = $this->retData;
+        }
+        if(isset($this->takeUpTime)){
+            $dataObj["take_up_time"] = intval($this->takeUpTime);
         }
 
         $baseLogModulePath = $this->baseLogPath.date("Y-m-d")."/".$module."/";

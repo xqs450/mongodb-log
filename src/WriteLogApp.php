@@ -22,8 +22,29 @@ class WriteLogApp
             self::$writeLog = new WriteLog($config);
         }
     }
+    /**
+     * @param $control
+     * @param $method
+     * 设置请求的路由名和方法名
+     */
     public static function  setRouter($control,$method){
         self::$writeLog->setRouter($control,$method);
+    }
+    /**
+     * @param $data
+     * 设置用户返回数据
+     */
+    public static function  setReturnData($data){
+        self::$writeLog->setReturnData($data);
+    }
+
+
+    /**
+     * @param $takeUpTime
+     * 设置当前请求所使用时间
+     */
+    public static function  setTakeUpTime($takeUpTime){
+        self::$writeLog->setTakeUpTime($takeUpTime);
     }
 
     /**
