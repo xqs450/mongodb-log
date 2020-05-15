@@ -24,14 +24,6 @@ class SearchLog
     public function search($condition,$pageInfo){
         $filter = new \stdClass();
         $search = array();
-        if(isset($condition["method"])){
-            $filter->method = $condition["method"];
-            $search['method'] = $condition["method"];
-        }
-        if(isset($condition["control"])){
-            $filter->control = $condition["control"];
-            $search['control'] = $condition["control"];
-        }
         if(isset($condition["start_time"]) && isset($condition["end_time"])){
             $startTime = strtotime($condition["start_time"]);
             $endTime = strtotime($condition["end_time"]);
@@ -66,6 +58,14 @@ class SearchLog
         if(isset($condition["union_id"])){
             $filter->union_id = $condition["union_id"];
             $search['union_id'] = $condition["union_id"];
+        }
+        if(isset($condition["uri"])){
+            $filter->uri = $condition["uri"];
+            $search['uri'] = $condition["uri"];
+        }
+        if(isset($condition["method"])){
+            $filter->method = $condition["method"];
+            $search['method'] = $condition["method"];
         }
         $manager    = new \MongoDB\Driver\Manager($this->host);
         $command = new \MongoDB\Driver\Command([

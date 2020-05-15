@@ -23,30 +23,46 @@ class WriteLogApp
         }
     }
     /**
-     * @param $control
+     * @param $uri
      * @param $method
-     * 设置请求的路由名和方法名
+     * 设置请求的uri和方法名
      */
-    public static function  setRouter($control,$method){
-        self::$writeLog->setRouter($control,$method);
+    public static function  setRouter($uri,$method){
+        if(!self::$writeLog){
+            return false;
+        }
+        self::$writeLog->setRouter($uri,$method);
+        return true;
     }
     /**
      * @param $data
-     * 设置用户返回数据
+     * 设置接口响应返回数据
      */
-    public static function  setReturnData($data){
-        self::$writeLog->setReturnData($data);
+    public static function  setResponseData($data){
+        if(!self::$writeLog){
+            return false;
+        }
+        self::$writeLog->setResponseData($data);
+        return true;
     }
     /**
      * @param $takeUpTime
      * 设置当前请求所使用时间
      */
     public static function  setTakeUpTime($takeUpTime){
+        if(!self::$writeLog){
+            return false;
+        }
         self::$writeLog->setTakeUpTime($takeUpTime);
+        return true;
     }
 
     public static function setUserId($userId){
+        if(!self::$writeLog){
+            return false;
+        }
         self::$writeLog->setUserId($userId);
+        return true;
     }
 
     /**
@@ -59,6 +75,9 @@ class WriteLogApp
      * 写日志
      */
     public static function writeLog($title="",$data=[],$type="log",$module="mobile",$isDetail=true){
-        self::$writeLog->writeLog($title,$data,$type,$module,$isDetail);
+        if(!self::$writeLog){
+            return false;
+        }
+        return self::$writeLog->writeLog($title,$data,$type,$module,$isDetail);
     }
 }

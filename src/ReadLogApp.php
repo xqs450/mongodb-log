@@ -26,6 +26,9 @@ class ReadLogApp
     }
     public static function run()
     {
+        if(!self::$readLog){
+            return false;
+        }
         self::$readLog->run();
     }
 }

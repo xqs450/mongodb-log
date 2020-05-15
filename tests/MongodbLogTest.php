@@ -32,7 +32,7 @@ class MongodbLogTest extends TestCase
 
     public function testWriteLog()
     {
-        WriteLogApp::setRouter("index","index");
+        WriteLogApp::setRouter("/index/index","get");
         WriteLogApp::writeLog("aaa",["bbb"]);
         $this->assertTrue(true);
     }

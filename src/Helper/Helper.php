@@ -8,7 +8,7 @@
 namespace MongodbLog\Helper;
 class Helper{
     public static function getClientIpAddress(){
-        $ip = "127.0.0.1";
+        $ip = "";
         if(!empty($_SERVER['HTTP_CLIENT_IP'])){
             //ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];

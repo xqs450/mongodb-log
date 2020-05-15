@@ -13,12 +13,12 @@ use MongodbLog\Helper\helper;
 class WriteLog
 {
     protected $baseLogPath;
-    protected $control;
     protected $method;
-    protected $retData;
+    protected $responseData;
     protected $takeUpTime;
     protected $unionSessionId;
     protected $userId;
+    protected $uri;
     public function __construct($config){
         $this->baseLogPath = $config["base_log_path"];
         if(!is_dir($this->baseLogPath)){
@@ -30,14 +30,14 @@ class WriteLog
         $this->userId = 0;
     }
 
-    public function setRouter($control,$method){
-        $this->control = $control;
-        $this->method = $method;
+    public function setRouter($uri,$method){
+        $this->uri      = $uri;
+        $this->method   = $method;
         $this->unionSessionId = $this->makeUnionSessionId();
     }
 
-    public function setReturnData($data){
-        $this->retData = $data;
+    public function setResponseData($data){
+        $this->responseData = $data;
     }
 
     public function setTakeUpTime($takeUpTime){
@@ -63,7 +63,6 @@ class WriteLog
         if(!is_dir($baseLogPath)){
             mkdir($baseLogPath);
         }
-        $fileName = trim($this->control."-".$this->method);
         $dataObj = [];
         $dataObj["union_id"]    = $this->unionSessionId;
         $dataObj["data"]        = $data;
@@ -71,18 +70,19 @@ class WriteLog
         $dataObj["title"]       = $title;
         $dataObj["time"]        = intval($curTime);
         $dataObj["user_id"]     = $this->userId;
-        $dataObj["control"]     = trim($this->control);
         $dataObj["method"]      = trim($this->method);
+        $dataObj["uri"]         = trim($this->uri);
         if($isDetail){
             $dataObj["query"]       = $_REQUEST;
             $dataObj["client_ip"]   = Helper::getClientIpAddress();
-            if(isset($this->retData)){
-                $dataObj["return_data"] = $this->retData;
+            if(isset($this->responseData)){
+                $dataObj["response_data"] = $this->responseData;
             }
             if(isset($this->takeUpTime)){
                 $dataObj["take_up_time"] = intval($this->takeUpTime);
             }
         }
+        $fileName = trim(str_replace("/","_",$this->uri));
         $baseLogModulePath = $this->baseLogPath.date("Y-m-d")."/".$module."/";
         if(!is_dir($baseLogModulePath)){
             mkdir($baseLogModulePath);

@@ -27,10 +27,13 @@ class SearchLogApp
     /**
      * @param $condition array
      * @param $pageInfo array currentPage当前第几页 pageSize每页的数量
-     * @return array
+     * @return array|bool
      */
     public static function search($condition=[],$pageInfo=[])
     {
+        if(!self::$searchLog){
+            return false;
+        }
         return self::$searchLog->search($condition,$pageInfo);
     }
 }
